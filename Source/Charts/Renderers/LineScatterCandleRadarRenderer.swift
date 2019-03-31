@@ -38,12 +38,12 @@ open class LineScatterCandleRadarRenderer: BarLineScatterCandleBubbleRenderer
         }
         
         // draw horizontal highlight lines
-        if set.isHorizontalHighlightIndicatorEnabled
-        {
-            context.beginPath()
-            context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: point.y))
-            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: point.y))
-            context.strokePath()
-        }
+//        if set.isHorizontalHighlightIndicatorEnabled
+//        {
+//            context.beginPath()
+//            context.move(to: CGPoint(x: viewPortHandler.contentLeft, y: point.y))
+//            context.addLine(to: CGPoint(x: viewPortHandler.contentRight, y: point.y))
+//            context.strokePath()
+//        }
     }
 }

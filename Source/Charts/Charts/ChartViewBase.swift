@@ -37,6 +37,12 @@ public protocol ChartViewDelegate
 
     // Callbacks when Animator stops animating
     @objc optional func chartView(_ chartView: ChartViewBase, animatorDidStop animator: Animator)
+    
+    @objc optional func longPressStart(_ chartView: ChartViewBase)
+    
+    @objc optional func longPressEnd(_ chartView: ChartViewBase)
+    
+    @objc optional func longPressChange(_ chartView: ChartViewBase, entry: ChartDataEntry)
 }
 
 open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
@@ -505,6 +511,39 @@ open class ChartViewBase: NSUIView, ChartDataProvider, AnimatorDelegate
     @objc open func highlightValue(_ highlight: Highlight?)
     {
         highlightValue(highlight, callDelegate: false)
+    }
+    
+    private var lastEntry: ChartDataEntry?
+    @objc open func longPress(_ highlight: Highlight?) {
+        var entry: ChartDataEntry?
+        var h = highlight
+                
+        if let h = h {
+            self.delegate?.longPressStart?(self)
+
+            entry = _data?.entryForHighlight(h)
+            
+            if lastEntry != nil {
+                if lastEntry?.x == entry?.x { return }
+            }
+            
+            lastEntry = entry
+            
+            if let e = entry {
+                _indicesToHighlight = [h]
+            } else {
+                _indicesToHighlight.removeAll(keepingCapacity: false)
+            }
+            self.delegate?.longPressChange?(self, entry: entry!)
+        } else { 
+            lastHighlighted = nil 
+            lastEntry = nil
+            _indicesToHighlight.removeAll(keepingCapacity: false)
+            
+            self.delegate?.longPressEnd?(self)
+        }
+        
+        setNeedsDisplay()
     }
 
     /// Highlights the value selected by touch gesture.
